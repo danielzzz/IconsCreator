@@ -28,3 +28,5 @@ usage:
 ```
 resizor baseicon.php #default icon.png 
 ```
+
+you may edit android_sizes.json and Contents.json files if you want other icons to be generated
