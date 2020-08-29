@@ -1,7 +1,30 @@
-This script provides an easy way to generate from a high def png all the icons requested for mobile development (16, 29, 32, 36, 40, 48, 50, 57, 58, 60, 64, 72, 76, 80, 87, 96, 100, 114, 120, 128, 144, 152, 167, 180, 192, 256, 512, 1024).
+resizor
+-
 
-Add your high def icon in the script directory. Then can generate icons in two ways:
-- via your local browser, example via [MAMP](http://www.mamp.info/en/index.html): http://localhost:8888/IconsCreator/resizor.php
-- using a [CLI](http://en.wikipedia.org/wiki/Command-line_interface): `cd` in the script directory then `php resizor.php myHighDefIcon.png`
+This script provides an easy way to generate from a high def png all the icons requested for mobile development for ios and android.
 
-On OS X Yosemite, you need to run `export PATH=/usr/local/php5/bin:$PATH`before using the *CLI*.
+originally created by: https://github.com/DaVikingCode/IconsCreator
+
+rewritten by: Dan Zelisko
+
+installation:
+1) clone this repository
+
+2) edit your php path in resizor file
+
+3) add the base directory of the script to PATH
+for example add this add the end of your ~/.bashrc file
+```
+# add resizor to PATH
+export PATH="$PATH:PATH_TO_THIS_DIRECTORY";
+```
+
+reload .bashrc
+```
+source ~/.bashrc
+```
+
+usage:
+```
+resizor baseicon.php #default icon.png 
+```

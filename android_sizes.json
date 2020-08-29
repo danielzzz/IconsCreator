@@ -1,0 +1,22 @@
+[
+    {
+        "dir": "mipmap-xxxhdpi",
+        "size": "192"
+    },
+    {
+        "dir": "mipmap-xxhdpi",
+        "size": "144"
+    },
+    {
+        "dir": "mipmap-xhdpi",
+        "size": "96"
+    },
+    {
+        "dir": "mipmap-hdpi",
+        "size": "72"
+    },
+    {
+        "dir": "mipmap-mdpi",
+        "size": "48"
+    }
+]

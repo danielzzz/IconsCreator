@@ -1,0 +1,116 @@
+#!/usr/bin/php
+<?php
+
+include('SimpleImage.php');
+
+ini_set("memory_limit", "50M");
+
+$baseDir = dirname(__FILE__) . DIRECTORY_SEPARATOR;
+//echo $baseDir . "\n";
+
+$inputFile = @$argv[1] ? $argv[1] : 'icon.png';
+if (!file_exists($inputFile)) {
+    die("\nERROR: input icon not found\n\nusage:\nresizor [input_image_path | icon.png]\n\n");
+}
+
+//remove dir if exists
+$iconsDir = 'icons';
+if (is_dir($iconsDir)) {
+    $shouldProceed = readline('WARNING: icons dir exists! Do you want to delete it? (Y/n): ');
+    if (strtolower(trim($shouldProceed)) == 'n') {
+        exit;
+    }
+    echo "deleting $iconsDir\n";
+    rrmdir($iconsDir);
+}
+
+
+//create image
+$image = new SimpleImage();
+$image->load($inputFile);
+
+
+//--- ios resize --------------------------
+//reset dirs
+$iosDir = 'icons/ios/Assets.xcassets/AppIcon.appiconset/';
+if (!@mkdir($iosDir, 0777, true)) {
+    die('Cannot create dir ' . $iosDir);
+}
+
+//get ios contents file
+$iconData = file_get_contents($baseDir . 'Contents.json');
+$iconDataJSON = json_decode($iconData);
+
+foreach ($iconDataJSON->images as $i) {
+    $image->reset();
+
+    $sizeField = 'expected-size';
+    $size = $i->$sizeField;
+
+    $fileName = $iosDir . $i->filename;
+    //var_dump($fileName);
+    echo "generating $fileName\n";
+    $image->resize($size, $size);
+    $image->save($fileName, IMAGETYPE_PNG);
+}
+
+//appstore icon
+$image->reset();
+$image->resize(1024, 1024);
+$image->save($iconsDir . "/appstore.png", IMAGETYPE_PNG);
+
+echo "copying Contents.json\n";
+copy('Contents.json', $iosDir . 'Contents.json');
+
+//-------------------- android ----------------------
+$iconData = file_get_contents($baseDir . 'android_sizes.json');
+$iconDataJSON = json_decode($iconData);
+
+$androidIcon = 'ic_icon.png';
+$androidDir = 'icons/android/';
+
+foreach ($iconDataJSON as $i) {
+    $image->reset();
+
+    $outDir = $androidDir . $i->dir . DIRECTORY_SEPARATOR;
+    if (!@mkdir($androidDir . $i->dir, 0777, true)) {
+        die('Cannot create dir ' . $outDir . "\n");
+    }
+    $fileName = $outDir . $androidIcon;
+    $image->resize($i->size, $i->size);
+    echo "generating $fileName\n";
+    $image->save($fileName, IMAGETYPE_PNG);
+}
+
+//playstore icon
+$image->reset();
+$image->resize(512, 521);
+$image->save($iconsDir . "/playstore.png", IMAGETYPE_PNG);
+
+echo "android icons created \n";
+
+
+
+
+echo "icons generated \r\n";
+
+// by holger1 at NOSPAMzentralplan dot de
+function rrmdir($dir)
+{
+    if (is_dir($dir)) {
+        $objects = scandir($dir);
+        foreach ($objects as $object) {
+            if ($object != "." && $object != "..") {
+                if (filetype($dir . "/" . $object) == "dir") {
+                    rrmdir($dir . "/" . $object);
+                } else {
+                    //echo "unlink {$dir}/{$object}\n";
+                    unlink($dir . "/" . $object);
+                }
+            }
+        }
+        reset($objects);
+        //echo "rmdir $dir\n";
+        rmdir($dir);
+    }
+}
