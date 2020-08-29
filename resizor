@@ -66,7 +66,7 @@ copy('Contents.json', $iosDir . 'Contents.json');
 $iconData = file_get_contents($baseDir . 'android_sizes.json');
 $iconDataJSON = json_decode($iconData);
 
-$androidIcon = 'ic_icon.png';
+$androidIcon = 'ic_launcher.png';
 $androidDir = 'icons/android/';
 
 foreach ($iconDataJSON as $i) {
@@ -90,6 +90,15 @@ $image->save($iconsDir . "/playstore.png", IMAGETYPE_PNG);
 echo "android icons created \n";
 
 
+//detect android dir
+$androidDir = './android/app/src/main/res/';
+if (is_dir($androidDir)) {
+    $shouldProceed = readline('INFO android dir detected. Do you want to copy icons over? (Y/n): ');
+    if (strtolower(trim($shouldProceed)) == 'Y' || empty($shouldProceed)) {
+        exec('cp -r icons/android/* ./android/app/src/main/res/');
+        //copy('icons/android/*', $androidDir);
+    }
+}
 
 
 echo "icons generated \r\n";
